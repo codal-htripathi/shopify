@@ -1,0 +1,45 @@
+<!-- Button to update cart -->
+<button id="updateCartButton">Update Cart</button>
+
+<!-- Display the cart JSON response -->
+<div id="cartResponse"></div>
+
+<!-- Your other HTML content -->
+
+<!-- Include your custom JavaScript -->
+<script>
+  $(document).ready(function () {
+    // Handle the click event on the "Update Cart" button
+    $('#updateCartButton').on('click', function () {
+      // Define your updates, note, or attributes
+      // let updates = {
+      //   794864053: 2,
+      //   794864233: 3
+      // };
+
+      // You can modify this to update note or attributes as needed
+      let requestData = {
+        updates: updates
+      };
+
+      // Make a POST request to the cart/update.js endpoint
+      $.ajax({
+        url: '/cart/update.js',
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(requestData),
+        success: function (response) {
+          // Handle the successful response
+          console.log(response);
+          $('#cartResponse').text(JSON.stringify(response));
+        },
+        error: function (error) {
+          // Handle the error response
+          console.error('Error:', error);
+          $('#cartResponse').text('Error: ' + JSON.stringify(error));
+        }
+      });
+    });
+  });
+</script>

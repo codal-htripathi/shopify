@@ -1,0 +1,201 @@
+<style>
+  .main {
+    padding: 10px;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    transform: translate(70%, -50%);
+  }
+  .added-to-cart {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+</style>
+
+<h1>Collection Name: {{ collection.title }}</h1>
+<div class="container">
+  {% for block in section.blocks %}
+    <div class="main">
+      <h3>{{ block.settings.prod.title }}</h3>
+      <img src="{{ block.settings.prod.featured_image.src | img_url: 'medium' }}">
+      <p>Vendor: {{ block.settings.prod.vendor }}</p>
+      <p>Description: {{ block.settings.prod.description }}</p>
+      <p>Price: {{ block.settings.prod.price | money }}</p>
+      <p style="text-decoration: line-through;">Original Price: {{ block.settings.prod.compare_at_price | money }}</p>
+      <div class="add-to-cart">
+        <!-- loop to get the variant id of the product. -->
+        {% for variant in block.settings.prod.variants %}
+          <input type="hidden" id="variantgetid" value="{{ variant.id }}">
+          <!-- <li>{{ variant.id }}</li> -->
+        {% endfor %}
+        <button name="add" class="button product-add" type="submit" id="{{ block.settings.prod.id }}">
+          Add to cart
+        </button>
+        <p class="added-to-cart-{{ block.settings.prod.id }}">Added to cart!</p>
+        <button id="updateCartButton">Update Cart</button>
+        <button id="changeCartButton">Change Cart</button>
+        <div id="cartResponse"></div>
+        <div id="updatedata"></div>
+      </div>
+    </div>
+  {% endfor %}
+  <p class="error"></p>
+</div>
+{% for block in section.blocks %}
+  <script>
+    $('.added-to-cart-{{ block.settings.prod.id }}').hide();
+      $(document).on('click', '#{{ block.settings.prod.id }}', function(){
+        // Show the element
+        $('.added-to-cart-{{ block.settings.prod.id }}').show();
+
+        // Set a timer to hide the element after 3000 milliseconds (3 seconds)
+        var timer = setInterval(function() {
+            $('.added-to-cart-{{ block.settings.prod.id }}').hide();
+            clearInterval(timer); // Clear the interval after hiding the element
+        }, 3000);
+
+
+        let getvarintid = $(this).parents('.add-to-cart').find('#variantgetid').val();
+        // alert(getvarintid);
+        let formData = {
+         'items': [{
+          'id': getvarintid,
+          'quantity': 1
+          }]
+        };
+
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+          .then(data => {
+            console.log('Product JSON:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      });
+  </script>
+  <!-- Update Cart code -->
+  <script>
+    $(document).on('click','#updateCartButton', function(){
+       var variantIds = [];
+
+      // Collect variant IDs
+      $('.variantId').each(function() {
+        variantIds.push($(this).val());
+      });
+      for (var i = 0; i < variantIds.length; i++) {
+        var currentVariantId = variantIds[i];
+        console.log('Variant ID at index ' + i + ': ' + currentVariantId);
+      };
+
+
+      let updates = {
+        42115379920948: 2,
+        42254974451764: 2,
+        // variantIds[3]: 2
+      };
+
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'xmlhttprequest' // Add this header for Shopify AJAX requests
+        },
+        body: JSON.stringify({ updates })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+  <!-- Change Cart code -->
+  <script>
+    $(document).on('click', '#changeCartButton', function(){
+       jQuery.post('/cart/change.js', { quantity: 4, id: '42115379920948' });
+    });
+  </script>
+{% endfor %}
+
+{% schema %}
+{
+  "name": "SELECT Product",
+  "tag": "section",
+  "class": "slideshow",
+  "limit": 2,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Product Details"
+    }
+  ],
+  "max_blocks": 10,
+  "blocks": [
+    {
+      "name": "Product Block",
+      "type": "slide",
+      "settings": [
+        {
+          "id": "prod",
+          "type": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "prod-image",
+          "label": "Image"
+        },
+        {
+          "id": "vendor",
+          "type": "text",
+          "label": "Vendor Name"
+        },
+        {
+          "id": "prod-des",
+          "type": "text",
+          "label": "Product Description"
+        },
+        {
+          "id": "prod-or-price",
+          "type": "text",
+          "label": "Product Original Price"
+        },
+        {
+          "id": "prod-price",
+          "type": "text",
+          "label": "Product Discounted Price"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product-Add-Task",
+      "settings": {
+        "title": "Slideshow"
+      },
+      "blocks": [
+
+      ]
+    }
+  ]
+}
+{% endschema %}

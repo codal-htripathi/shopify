@@ -1,0 +1,108 @@
+{% for variant in block.settings.prod.variants %}
+  <input type="hidden" class="variantid" value="{{ variant.id }}">
+  <p>{{ variant.id }}</p>
+{% endfor %}
+<h1>Hi</h1>
+{% for variant in block.settings.prod.variants %}
+  <p>{{ variant.id }}</p>
+{% endfor %}
+
+<button id="changeCartButton">Change Cart</button>
+
+<!-- Clear Cart jQuery -->
+<script>
+  $(document).ready(function () {
+    $(document).on('click', '#clearCartButton', function(){
+      // Array to store variant IDs
+      var variantIds = [];
+
+      // Collect variant IDs
+      $('#variantId').each(function() {
+        variantIds.push($(this).val());
+      });
+
+      // Empty the cart using Shopify API
+      $.ajax({
+        type: 'POST',
+        url: '/cart/clear.js', // Endpoint to clear the cart
+        data: { 'items': variantIds },
+        dataType: 'json',
+        success: function(response) {
+          // Display the cart JSON response
+          $('#cartResponse').html(JSON.stringify(response, null, 2));
+        },
+        error: function(error) {
+          console.error('Error clearing cart:', error);
+          // Handle error if needed
+        }
+      });
+    });
+  });
+</script>
+
+<!-- Update Cart jQuery -->
+<script>
+  $(document).ready(function(){
+    $(document).on('click','#updateCartButton', function(){
+       var variantIds = [];
+
+      // Collect variant IDs
+      $('.variantId').each(function() {
+        variantIds.push($(this).val());
+      });
+
+      let updates = {
+        42115379920948: 3,
+         42254974451764:3
+      };
+
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'xmlhttprequest' // Add this header for Shopify AJAX requests
+        },
+        body: JSON.stringify({ updates })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Click Cart Buttons",
+  "tag": "section",
+  "class": "slideshow",
+  "limit": 2,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Product Details"
+    }
+  ],
+  "max_blocks": 10,
+  "blocks": [
+  ],
+  "presets": [
+    {
+      "name": "Clear/Update/Change Cart",
+      "settings": {
+        "title": "Cart"
+      },
+      "blocks": [
+
+      ]
+    }
+  ]
+}
+{% endschema %}

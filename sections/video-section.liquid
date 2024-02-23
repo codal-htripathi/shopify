@@ -1,0 +1,56 @@
+<div class="video" style="height: 1000px; width:80%">
+  {% for block in section.blocks %}
+    <video autoplay muted loop>
+      <source
+        src="{{ block.settings.video | video_tag}}"
+        type="video/mp4"
+      >
+    </video>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Header Video",
+  "tag": "section",
+  "class": "slideshow",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Enter"
+    }
+  ],
+  "max_blocks": 5,
+  "blocks": [
+     {
+       "name": "Header Video",
+       "type": "options",
+       "settings": [
+         {
+           "type": "image_picker",
+           "id": "image",
+           "label": "Image"
+         },
+         {
+          "type": "video",
+           "id": "video",
+           "label": "video"
+        }
+       ]
+     }
+  ],
+  "presets": [
+    {
+      "name": "Header Video",
+      "settings": {
+        "title": "Header Video"
+      },
+      "blocks": [
+
+      ]
+    }
+  ]
+}
+{% endschema %}
