@@ -334,8 +334,7 @@ body {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <!--
-    <script>    $(document).on('click','.ad_to_cart',function(){    var ID = $(this).find('.ad_to_cart_id').attr("var_id");    $.ajax({    type: 'POST',
-      url: '/cart/add.js',
+    <script>    $(document).on('click','.ad_to_cart',function(){    var ID = $(this).find('.ad_to_cart_id').attr("var_id");    $.ajax({    type: 'POST',    url: '/cart/add.js',
       data: {
         quantity: 1,
         id: $(this).find('.ad_to_cart_id').attr("var_id")
@@ -355,7 +354,7 @@ body {
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <!-- {{ template.suffix }} -->
     <!-- {{ template.name }} -->
-    <p>This is a remote para.</p>
+    <h1>This is a h1 tag</h1>
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
