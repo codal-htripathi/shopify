@@ -431,7 +431,7 @@
   "platform_customizations": {
     "custom_css": [
       "#MainContent {padding: 20px;}",
-      "*{color: black}"
+      "*{color: black;}"
     ]
   }
 }
