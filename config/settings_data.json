@@ -430,8 +430,7 @@
   },
   "platform_customizations": {
     "custom_css": [
-      "#MainContent {padding: 20px;}",
-      "*{color: black;}"
+      "#MainContent {padding: 20px;}"
     ]
   }
 }
